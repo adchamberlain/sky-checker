@@ -22,6 +22,7 @@ struct ContentView: View {
     @StateObject private var viewModel = SkyCheckerViewModel()
     @State private var showingLocationSheet = false
     @State private var showingDatePicker = false
+    @State private var showingAbout = false
     
     var body: some View {
         NavigationStack {
@@ -68,8 +69,23 @@ struct ContentView: View {
                                     }
                                     .buttonStyle(.plain)
                                 }
+                                
+                                // About link at bottom
+                                Spacer()
+                                    .frame(height: 30)
+                                
+                                Button {
+                                    showingAbout = true
+                                } label: {
+                                    Text("[About]")
+                                        .font(.terminalSmall)
+                                        .foregroundColor(.terminalDim)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                
+                                Spacer()
+                                    .frame(height: 40)
                             }
-                            .padding(.bottom)
                         }
                         .refreshable {
                             await viewModel.refreshData()
@@ -110,6 +126,9 @@ struct ContentView: View {
                     showingDatePicker = false
                     Task { await viewModel.loadData() }
                 }
+            }
+            .sheet(isPresented: $showingAbout) {
+                AboutView { showingAbout = false }
             }
             .alert("ERROR", isPresented: $viewModel.showingError) {
                 Button("OK") {}
