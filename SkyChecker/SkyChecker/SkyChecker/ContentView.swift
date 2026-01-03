@@ -47,8 +47,11 @@ struct ContentView: View {
                             LazyVStack(alignment: .leading, spacing: 2) {
                                 // Table header
                                 HStack(spacing: 0) {
-                                    Text("Object")
-                                        .frame(width: 100, alignment: .leading)
+                                    HStack(spacing: 4) {
+                                        Text("   ")
+                                        Text("Object")
+                                    }
+                                    .frame(width: 100, alignment: .leading)
                                     Text("Status")
                                         .frame(width: 70, alignment: .center)
                                     Text("Rise")
@@ -59,7 +62,7 @@ struct ContentView: View {
                                 .font(.terminalCaption)
                                 .foregroundColor(.terminalDim)
                                 .padding(.horizontal)
-                                .padding(.top, 8)
+                                .padding(.vertical, 6)
                                 
                                 ForEach(viewModel.sortedObjects) { obj in
                                     NavigationLink {
