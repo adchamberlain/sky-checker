@@ -46,7 +46,7 @@ struct ContentView: View {
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 2) {
                                 // Table header
-                                HStack {
+                                HStack(spacing: 0) {
                                     Text("Object")
                                         .frame(width: 100, alignment: .leading)
                                     Text("Status")
