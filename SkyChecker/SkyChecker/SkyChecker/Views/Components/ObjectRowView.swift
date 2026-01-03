@@ -14,15 +14,15 @@ struct ObjectRowView: View {
             
             // Status
             Text(statusText)
-                .frame(width: 70, alignment: .leading)
-            
+                .frame(width: 70, alignment: .center)
+
             // Rise time
             Text(riseTimeText)
-                .frame(width: 60, alignment: .leading)
+                .frame(width: 60, alignment: .center)
 
             // Set time
             Text(setTimeText)
-                .frame(width: 60, alignment: .leading)
+                .frame(width: 60, alignment: .center)
         }
         .font(.terminalCaption)
         .foregroundColor(object.isVisible ? .terminalBright : .terminalGreen)
@@ -60,14 +60,14 @@ struct ObjectRowView: View {
         if let riseTime = object.riseTime {
             return formatTime(riseTime)
         }
-        return "—"
+        return "--"
     }
 
     private var setTimeText: String {
         if let setTime = object.setTime {
             return formatTime(setTime)
         }
-        return "—"
+        return "--"
     }
 
     private func formatTime(_ date: Date) -> String {
