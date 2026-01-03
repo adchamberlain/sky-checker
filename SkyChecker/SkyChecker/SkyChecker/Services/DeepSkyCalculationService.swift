@@ -67,11 +67,14 @@ class DeepSkyCalculationService {
             }
         }
 
-        // Calculate current position
+        // Calculate current position only if within observation window
         let now = Date()
-        let (currentAlt, currentAz) = altitudeAzimuth(ra: ra, dec: dec, latitude: location.latitude, longitude: location.longitude, time: now)
-        data.currentAltitude = currentAlt
-        data.currentAzimuth = currentAz
+        if now >= startTime && now <= endTime {
+            let (currentAlt, currentAz) = altitudeAzimuth(ra: ra, dec: dec, latitude: location.latitude, longitude: location.longitude, time: now)
+            data.currentAltitude = currentAlt
+            data.currentAzimuth = currentAz
+        }
+        // Leave currentAltitude/Azimuth as nil if outside observation window
         data.altitudeAtStart = dataPoints.first?.alt
 
         return data
