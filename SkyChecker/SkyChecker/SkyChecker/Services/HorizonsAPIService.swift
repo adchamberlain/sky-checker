@@ -184,15 +184,15 @@ class HorizonsAPIService {
         data.altitudeAtStart = dataPoints.first?.alt
 
         // Calculate current position by interpolating between data points
+        // Only set if current time is within the observation window
         let now = Date()
         if let (currentAlt, currentAz) = interpolateCurrentPosition(dataPoints: dataPoints, currentTime: now) {
             data.currentAltitude = currentAlt
             data.currentAzimuth = currentAz
             print("   Current position: alt=\(String(format: "%.1f", currentAlt))° az=\(String(format: "%.1f", currentAz))°")
         } else {
-            // Fallback to first data point if current time is before window
-            data.currentAltitude = dataPoints.first?.alt
-            data.currentAzimuth = dataPoints.first?.az
+            // Current time is outside observation window - leave currentAltitude/Azimuth as nil
+            print("   Current position: outside observation window")
         }
 
         return data
@@ -201,14 +201,16 @@ class HorizonsAPIService {
     private func interpolateCurrentPosition(dataPoints: [(time: Date, az: Double, alt: Double, illumination: Double?, sunElongation: Double?)], currentTime: Date) -> (altitude: Double, azimuth: Double)? {
         guard !dataPoints.isEmpty else { return nil }
 
-        // If current time is before all data points, return the first point
+        // If current time is before the observation window, return nil
+        // (we don't have valid data for this time)
         if currentTime < dataPoints.first!.time {
-            return (dataPoints.first!.alt, dataPoints.first!.az)
+            return nil
         }
 
-        // If current time is after all data points, return the last point
+        // If current time is after the observation window, return nil
+        // (we don't have valid data for this time)
         if currentTime > dataPoints.last!.time {
-            return (dataPoints.last!.alt, dataPoints.last!.az)
+            return nil
         }
 
         // Find the two data points that bracket the current time
