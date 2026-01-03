@@ -19,10 +19,10 @@ struct ObjectRowView: View {
             // Rise time
             Text(riseTimeText)
                 .frame(width: 60, alignment: .leading)
-            
-            // Current position
-            Text(currentPositionText)
-                .frame(width: 80, alignment: .leading)
+
+            // Set time
+            Text(setTimeText)
+                .frame(width: 60, alignment: .leading)
         }
         .font(.terminalCaption)
         .foregroundColor(object.isVisible ? .terminalBright : .terminalGreen)
@@ -58,24 +58,16 @@ struct ObjectRowView: View {
 
     private var riseTimeText: String {
         if let riseTime = object.riseTime {
-            // If rise time has passed, show "Up" instead
-            if riseTime < Date() {
-                return "Up"
-            }
             return formatTime(riseTime)
         }
-        // If no rise time but object is visible, it was already up at sunset
-        if object.visibilityStatus == .visible {
-            return "Up"
-        }
-        return "--:--"
+        return "—"
     }
 
-    private var currentPositionText: String {
-        if let alt = object.currentAltitude, let dir = object.currentDirection {
-            return "\(Int(alt))° \(dir.rawValue)"
+    private var setTimeText: String {
+        if let setTime = object.setTime {
+            return formatTime(setTime)
         }
-        return "--"
+        return "—"
     }
 
     private func formatTime(_ date: Date) -> String {
