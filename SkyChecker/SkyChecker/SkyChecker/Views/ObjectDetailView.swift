@@ -62,17 +62,25 @@ struct ObjectDetailView: View {
                         .foregroundColor(.terminalDim)
 
                     // Current position
-                    if let currentAlt = object.currentAltitude, let currentDir = object.currentDirection {
-                        HStack {
-                            Text("Now:")
-                                .frame(width: 50, alignment: .leading)
+                    HStack {
+                        Text("Now:")
+                            .frame(width: 50, alignment: .leading)
+                        if let currentAlt = object.currentAltitude {
                             Text("[\(String(format: "%.1f", currentAlt))°]")
                                 .foregroundColor(.terminalDim)
-                            Text("[\(currentDir.rawValue)]")
+                        } else {
+                            Text("[--]")
                                 .foregroundColor(.terminalDim)
                         }
-                        .foregroundColor(.terminalGreen)
+                        if let currentDir = object.currentDirection {
+                            Text("[\(currentDir.rawValue)]")
+                                .foregroundColor(.terminalDim)
+                        } else {
+                            Text("[--]")
+                                .foregroundColor(.terminalDim)
+                        }
                     }
+                    .foregroundColor(.terminalGreen)
 
                     if let rise = object.riseTime {
                         HStack {
