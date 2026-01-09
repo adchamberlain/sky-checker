@@ -4,6 +4,16 @@ A native iOS app that shows you what celestial objects are visible tonight from 
 
 Built with SwiftUI and featuring a retro terminal aesthetic with ASCII art visualizations.
 
+## 📱 Available on the App Store
+
+**SkyChecker is available for free on the iOS App Store!**
+
+[![Download on the App Store](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/app/skychecker)
+
+*No Xcode required — just download and go.*
+
+---
+
 ## Features
 
 - Automatic GPS location or manual coordinate entry
