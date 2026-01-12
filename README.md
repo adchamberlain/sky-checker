@@ -8,7 +8,7 @@ Built with SwiftUI and featuring a retro terminal aesthetic with ASCII art visua
 
 **SkyChecker is available for free on the iOS App Store!**
 
-[![Download on the App Store](https://apps.apple.com/us/app/skychecker/id6757621845)
+https://apps.apple.com/us/app/skychecker/id6757621845 
 
 *No Xcode required — just download and go.*
 
