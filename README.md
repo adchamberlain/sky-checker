@@ -12,6 +12,8 @@ Built with SwiftUI and featuring a retro terminal aesthetic with ASCII art visua
 
 *No Xcode required — just download and go.*
 
+**Website:** [skychecker.app](https://skychecker.app)
+
 ---
 
 ## Features
