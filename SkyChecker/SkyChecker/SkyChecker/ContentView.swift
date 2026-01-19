@@ -175,22 +175,30 @@ struct ContentView: View {
 
     @ViewBuilder
     private func meteorShowerBanner(status: MeteorShowerStatus) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Divider()
-                .background(Color.terminalDim)
-                .padding(.vertical, 4)
+        NavigationLink {
+            MeteorShowerDetailView(status: status)
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Divider()
+                    .background(Color.terminalDim)
+                    .padding(.vertical, 4)
 
-            HStack(spacing: 8) {
-                Text("*")
-                    .foregroundColor(status.isActive ? .terminalBright : .terminalGreen)
-                Text(status.statusText)
-                    .foregroundColor(status.isActive ? .terminalBright : .terminalGreen)
+                HStack(spacing: 8) {
+                    Text("*")
+                        .foregroundColor(status.isActive ? .terminalBright : .terminalGreen)
+                    Text(status.statusText)
+                        .foregroundColor(status.isActive ? .terminalBright : .terminalGreen)
+                    Spacer()
+                    Text(">")
+                        .foregroundColor(.terminalDim)
+                }
+
+                Text("  \(status.detailText)")
+                    .foregroundColor(.terminalDim)
             }
-
-            Text("  \(status.detailText)")
-                .foregroundColor(.terminalDim)
+            .font(.terminalSmall)
         }
-        .font(.terminalSmall)
+        .buttonStyle(.plain)
     }
     
     private func formatDate(_ date: Date) -> String {

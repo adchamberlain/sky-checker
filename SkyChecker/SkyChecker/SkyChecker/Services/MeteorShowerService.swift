@@ -12,7 +12,9 @@ class MeteorShowerService {
             activeStart: (month: 12, day: 28), activeEnd: (month: 1, day: 12),
             zhr: 120,
             radiantConstellation: "Bootes",
-            description: "Strong January shower, best after midnight"
+            parentBody: "Asteroid 2003 EH1",
+            description: "Strong January shower, best after midnight",
+            wikipediaArticle: "Quadrantids"
         ),
         MeteorShower(
             name: "Lyrids",
@@ -20,7 +22,9 @@ class MeteorShowerService {
             activeStart: (month: 4, day: 16), activeEnd: (month: 4, day: 25),
             zhr: 18,
             radiantConstellation: "Lyra",
-            description: "Spring shower from Comet Thatcher"
+            parentBody: "Comet C/1861 G1 Thatcher",
+            description: "Spring shower from Comet Thatcher",
+            wikipediaArticle: "Lyrids"
         ),
         MeteorShower(
             name: "Eta Aquariids",
@@ -28,7 +32,9 @@ class MeteorShowerService {
             activeStart: (month: 4, day: 19), activeEnd: (month: 5, day: 28),
             zhr: 50,
             radiantConstellation: "Aquarius",
-            description: "Debris from Halley's Comet"
+            parentBody: "Halley's Comet",
+            description: "Debris from Halley's Comet",
+            wikipediaArticle: "Eta_Aquariids"
         ),
         MeteorShower(
             name: "Delta Aquariids",
@@ -36,7 +42,9 @@ class MeteorShowerService {
             activeStart: (month: 7, day: 12), activeEnd: (month: 8, day: 23),
             zhr: 20,
             radiantConstellation: "Aquarius",
-            description: "Summer shower, best from southern latitudes"
+            parentBody: "Comet 96P/Machholz",
+            description: "Summer shower, best from southern latitudes",
+            wikipediaArticle: "Delta_Aquariids"
         ),
         MeteorShower(
             name: "Perseids",
@@ -44,7 +52,9 @@ class MeteorShowerService {
             activeStart: (month: 7, day: 17), activeEnd: (month: 8, day: 24),
             zhr: 100,
             radiantConstellation: "Perseus",
-            description: "Most popular summer shower"
+            parentBody: "Comet 109P/Swift-Tuttle",
+            description: "Most popular summer shower",
+            wikipediaArticle: "Perseids"
         ),
         MeteorShower(
             name: "Orionids",
@@ -52,7 +62,9 @@ class MeteorShowerService {
             activeStart: (month: 10, day: 2), activeEnd: (month: 11, day: 7),
             zhr: 20,
             radiantConstellation: "Orion",
-            description: "Another Halley's Comet shower"
+            parentBody: "Halley's Comet",
+            description: "Another Halley's Comet shower",
+            wikipediaArticle: "Orionids"
         ),
         MeteorShower(
             name: "Leonids",
@@ -60,7 +72,9 @@ class MeteorShowerService {
             activeStart: (month: 11, day: 6), activeEnd: (month: 11, day: 30),
             zhr: 15,
             radiantConstellation: "Leo",
-            description: "Fast meteors, occasional storms"
+            parentBody: "Comet 55P/Tempel-Tuttle",
+            description: "Fast meteors, occasional storms",
+            wikipediaArticle: "Leonids"
         ),
         MeteorShower(
             name: "Geminids",
@@ -68,7 +82,9 @@ class MeteorShowerService {
             activeStart: (month: 12, day: 4), activeEnd: (month: 12, day: 17),
             zhr: 150,
             radiantConstellation: "Gemini",
-            description: "Strongest annual shower"
+            parentBody: "Asteroid 3200 Phaethon",
+            description: "Strongest annual shower",
+            wikipediaArticle: "Geminids"
         ),
         MeteorShower(
             name: "Ursids",
@@ -76,7 +92,9 @@ class MeteorShowerService {
             activeStart: (month: 12, day: 17), activeEnd: (month: 12, day: 26),
             zhr: 10,
             radiantConstellation: "Ursa Minor",
-            description: "Late December shower"
+            parentBody: "Comet 8P/Tuttle",
+            description: "Late December shower",
+            wikipediaArticle: "Ursids"
         )
     ]
 
@@ -190,7 +208,13 @@ struct MeteorShower {
     let activeEnd: (month: Int, day: Int)
     let zhr: Int  // Zenithal Hourly Rate (meteors per hour under ideal conditions)
     let radiantConstellation: String
+    let parentBody: String
     let description: String
+    let wikipediaArticle: String
+
+    var wikipediaURL: URL? {
+        URL(string: "https://en.wikipedia.org/wiki/\(wikipediaArticle)")
+    }
 }
 
 struct MeteorShowerStatus {
