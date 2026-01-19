@@ -4,12 +4,14 @@ enum CelestialObjectType: String, Codable, CaseIterable {
     case planet
     case moon
     case messier
-    
+    case satellite
+
     var displayName: String {
         switch self {
         case .planet: return "Planet"
         case .moon: return "Moon"
         case .messier: return "Deep Sky Object"
+        case .satellite: return "Satellite"
         }
     }
 }
@@ -142,6 +144,10 @@ struct CelestialObject: Identifiable, Codable {
         case "m31": articleName = "Andromeda_Galaxy"
         case "m42": articleName = "Orion_Nebula"
         case "m22": articleName = "Messier_22"
+        case "m45": articleName = "Pleiades"
+        case "m44": articleName = "Beehive_Cluster"
+        case "m13": articleName = "Messier_13"
+        case "iss": articleName = "International_Space_Station"
         default: articleName = name.replacingOccurrences(of: " ", with: "_")
         }
         return URL(string: "https://en.wikipedia.org/wiki/\(articleName)")
@@ -163,7 +169,14 @@ extension CelestialObject {
     static let messierObjects: [CelestialObject] = [
         CelestialObject(id: "m31", name: "M31 Andromeda Galaxy", shortName: "M31", type: .messier, horizonsCommand: "", rightAscension: 0.7122, declination: 41.27, iconName: "sparkles", description: "The nearest major galaxy"),
         CelestialObject(id: "m42", name: "M42 Orion Nebula", shortName: "M42", type: .messier, horizonsCommand: "", rightAscension: 5.59, declination: -5.45, iconName: "cloud.fill", description: "The great nebula in Orion"),
-        CelestialObject(id: "m22", name: "M22 Globular Cluster", shortName: "M22", type: .messier, horizonsCommand: "", rightAscension: 18.607, declination: -23.90, iconName: "star.fill", description: "Bright globular cluster")
+        CelestialObject(id: "m22", name: "M22 Globular Cluster", shortName: "M22", type: .messier, horizonsCommand: "", rightAscension: 18.607, declination: -23.90, iconName: "star.fill", description: "Bright globular cluster"),
+        CelestialObject(id: "m45", name: "M45 Pleiades", shortName: "M45", type: .messier, horizonsCommand: "", rightAscension: 3.7833, declination: 24.1167, iconName: "star.fill", description: "The Seven Sisters star cluster"),
+        CelestialObject(id: "m44", name: "M44 Beehive Cluster", shortName: "M44", type: .messier, horizonsCommand: "", rightAscension: 8.6733, declination: 19.6717, iconName: "star.fill", description: "Open cluster in Cancer"),
+        CelestialObject(id: "m13", name: "M13 Hercules Cluster", shortName: "M13", type: .messier, horizonsCommand: "", rightAscension: 16.6947, declination: 36.4617, iconName: "star.fill", description: "Great globular in Hercules")
+    ]
+
+    static let satelliteObjects: [CelestialObject] = [
+        CelestialObject(id: "iss", name: "ISS", shortName: "ISS", type: .satellite, horizonsCommand: "", iconName: "airplane", description: "International Space Station")
     ]
 }
 

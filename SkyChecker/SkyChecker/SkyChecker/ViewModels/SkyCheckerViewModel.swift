@@ -17,23 +17,28 @@ class SkyCheckerViewModel: ObservableObject {
     @Published var showingError = false
     @Published var manualLatitude = ""
     @Published var manualLongitude = ""
+    @Published var meteorShowerStatus: MeteorShowerStatus?
     
     private let locationService: LocationService
     private let sunsetService: SunsetService
     private let horizonsService: HorizonsAPIService
     private let deepSkyService: DeepSkyCalculationService
+    private let issService: ISSService
+    private let meteorShowerService: MeteorShowerService
     private let cacheService: CacheService
     private var cancellables = Set<AnyCancellable>()
     private var isRefreshing = false
     private var isFetchingData = false
 
-    init(locationService: LocationService? = nil, sunsetService: SunsetService? = nil, horizonsService: HorizonsAPIService? = nil, deepSkyService: DeepSkyCalculationService? = nil, cacheService: CacheService? = nil) {
+    init(locationService: LocationService? = nil, sunsetService: SunsetService? = nil, horizonsService: HorizonsAPIService? = nil, deepSkyService: DeepSkyCalculationService? = nil, issService: ISSService? = nil, meteorShowerService: MeteorShowerService? = nil, cacheService: CacheService? = nil) {
         self.locationService = locationService ?? LocationService()
         self.sunsetService = sunsetService ?? SunsetService()
         self.horizonsService = horizonsService ?? HorizonsAPIService()
         self.deepSkyService = deepSkyService ?? DeepSkyCalculationService()
+        self.issService = issService ?? ISSService()
+        self.meteorShowerService = meteorShowerService ?? MeteorShowerService()
         self.cacheService = cacheService ?? .shared
-        self.objects = CelestialObject.solarSystemObjects + CelestialObject.messierObjects
+        self.objects = CelestialObject.solarSystemObjects + CelestialObject.messierObjects + CelestialObject.satelliteObjects
     }
     
     func initialize() async {
@@ -71,6 +76,9 @@ class SkyCheckerViewModel: ObservableObject {
 
         // Detect polar conditions
         polarCondition = sunsetService.detectPolarCondition(for: selectedDate, at: location)
+
+        // Check for upcoming meteor showers
+        meteorShowerStatus = meteorShowerService.getShowerStatus(for: selectedDate)
 
         // Get observation window (sunset tonight → sunrise tomorrow)
         let window: (start: Date, end: Date)
@@ -118,11 +126,12 @@ class SkyCheckerViewModel: ObservableObject {
         isLoading = false
         
         do {
-            // Split objects into solar system (API) and deep sky (local calculation)
-            let solarSystemObjects = objects.filter { $0.type != .messier }
+            // Split objects into different categories
+            let solarSystemObjects = objects.filter { $0.type == .planet || $0.type == .moon }
             let deepSkyObjects = objects.filter { $0.type == .messier }
+            let satelliteObjects = objects.filter { $0.type == .satellite }
 
-            print("🚀 Starting fetch for \(objects.count) objects (\(solarSystemObjects.count) API, \(deepSkyObjects.count) local)...")
+            print("🚀 Starting fetch for \(objects.count) objects (\(solarSystemObjects.count) API, \(deepSkyObjects.count) local, \(satelliteObjects.count) satellites)...")
 
             // Fetch solar system objects from NASA Horizons API
             var data = try await horizonsService.fetchAllEphemeris(objects: solarSystemObjects, location: location, startTime: window.start, endTime: window.end)
@@ -133,6 +142,19 @@ class SkyCheckerViewModel: ObservableObject {
                     let ephemeris = deepSkyService.calculateEphemeris(ra: ra, dec: dec, location: location, startTime: window.start, endTime: window.end)
                     data[obj.id] = ephemeris
                     print("🌌 Calculated \(obj.name): transit alt=\(String(format: "%.1f", ephemeris.transitAltitude ?? -90))°")
+                }
+            }
+
+            // Fetch ISS passes
+            for obj in satelliteObjects {
+                if obj.id == "iss" {
+                    do {
+                        let ephemeris = try await issService.fetchISSPasses(location: location, startTime: window.start, endTime: window.end)
+                        data[obj.id] = ephemeris
+                    } catch {
+                        print("⚠️ ISS fetch failed: \(error.localizedDescription)")
+                        // Continue without ISS data - don't fail the whole load
+                    }
                 }
             }
 

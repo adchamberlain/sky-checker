@@ -100,7 +100,7 @@ struct ContentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("SkyChecker v1.0")
+                    Text("SkyChecker v1.1")
                         .font(.terminalTitle)
                         .foregroundColor(.terminalGreen)
                 }
@@ -149,23 +149,56 @@ struct ContentView: View {
                 Text("> Location: \(loc.displayString)")
                     .foregroundColor(.terminalGreen)
             }
-            
+
             Text("> Date: \(formatDate(viewModel.selectedDate))")
                 .foregroundColor(.terminalGreen)
-            
+
             HStack(spacing: 16) {
                 Text("> Sunset: \(viewModel.formattedSunset)")
                 Text("Sunrise: \(viewModel.formattedSunrise)")
             }
             .foregroundColor(.terminalGreen)
-            
+
             Text("> \(viewModel.visibleCount) objects visible tonight")
                 .foregroundColor(.terminalBright)
+
+            // Meteor shower banner
+            if let showerStatus = viewModel.meteorShowerStatus {
+                meteorShowerBanner(status: showerStatus)
+            }
         }
         .font(.terminalCaption)
         .padding(.horizontal)
         .padding(.vertical, 8)
         .padding(.bottom, 24)
+    }
+
+    @ViewBuilder
+    private func meteorShowerBanner(status: MeteorShowerStatus) -> some View {
+        NavigationLink {
+            MeteorShowerDetailView(status: status)
+        } label: {
+            VStack(alignment: .leading, spacing: 2) {
+                Divider()
+                    .background(Color.terminalDim)
+                    .padding(.vertical, 4)
+
+                HStack(spacing: 8) {
+                    Text("*")
+                        .foregroundColor(status.isActive ? .terminalBright : .terminalGreen)
+                    Text(status.statusText)
+                        .foregroundColor(status.isActive ? .terminalBright : .terminalGreen)
+                    Spacer()
+                    Text(">")
+                        .foregroundColor(.terminalDim)
+                }
+
+                Text("  \(status.detailText)")
+                    .foregroundColor(.terminalDim)
+            }
+            .font(.terminalSmall)
+        }
+        .buttonStyle(.plain)
     }
     
     private func formatDate(_ date: Date) -> String {
