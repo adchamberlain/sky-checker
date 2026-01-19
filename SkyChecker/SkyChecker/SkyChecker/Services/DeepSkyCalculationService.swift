@@ -167,3 +167,23 @@ class DeepSkyCalculationService {
         return jd + dayFraction
     }
 }
+
+// MARK: - Testing Support
+#if DEBUG
+extension DeepSkyCalculationService {
+    /// Testable wrapper for Julian Date calculation
+    func testableJulianDate(from date: Date) -> Double {
+        julianDate(from: date)
+    }
+
+    /// Testable wrapper for Local Sidereal Time calculation
+    func testableLST(longitude: Double, time: Date) -> Double {
+        localSiderealTime(longitude: longitude, time: time)
+    }
+
+    /// Testable wrapper for altitude/azimuth calculation
+    func testableAltAz(ra: Double, dec: Double, latitude: Double, longitude: Double, time: Date) -> (altitude: Double, azimuth: Double) {
+        altitudeAzimuth(ra: ra, dec: dec, latitude: latitude, longitude: longitude, time: time)
+    }
+}
+#endif

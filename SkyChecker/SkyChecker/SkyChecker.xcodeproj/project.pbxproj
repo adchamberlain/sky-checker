@@ -6,11 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		3CB293462F1EF2E900AE6250 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3CE076082EEB7CC800EBCF0C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CE0760F2EEB7CC800EBCF0C;
+			remoteInfo = SkyChecker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		3CB293422F1EF2E900AE6250 /* SkyCheckerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkyCheckerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CE076102EEB7CC800EBCF0C /* SkyChecker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkyChecker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3CB293432F1EF2E900AE6250 /* SkyCheckerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SkyCheckerTests;
+			sourceTree = "<group>";
+		};
 		3CE076122EEB7CC800EBCF0C /* SkyChecker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SkyChecker;
@@ -19,6 +35,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3CB2933F2F1EF2E900AE6250 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3CE0760D2EEB7CC800EBCF0C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				3CE076122EEB7CC800EBCF0C /* SkyChecker */,
+				3CB293432F1EF2E900AE6250 /* SkyCheckerTests */,
 				3CE076112EEB7CC800EBCF0C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				3CE076102EEB7CC800EBCF0C /* SkyChecker.app */,
+				3CB293422F1EF2E900AE6250 /* SkyCheckerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +73,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3CB293412F1EF2E900AE6250 /* SkyCheckerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3CB2934A2F1EF2E900AE6250 /* Build configuration list for PBXNativeTarget "SkyCheckerTests" */;
+			buildPhases = (
+				3CB2933E2F1EF2E900AE6250 /* Sources */,
+				3CB2933F2F1EF2E900AE6250 /* Frameworks */,
+				3CB293402F1EF2E900AE6250 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CB293472F1EF2E900AE6250 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				3CB293432F1EF2E900AE6250 /* SkyCheckerTests */,
+			);
+			name = SkyCheckerTests;
+			packageProductDependencies = (
+			);
+			productName = SkyCheckerTests;
+			productReference = 3CB293422F1EF2E900AE6250 /* SkyCheckerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		3CE0760F2EEB7CC800EBCF0C /* SkyChecker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3CE0761B2EEB7CC900EBCF0C /* Build configuration list for PBXNativeTarget "SkyChecker" */;
@@ -80,6 +128,10 @@
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					3CB293412F1EF2E900AE6250 = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = 3CE0760F2EEB7CC800EBCF0C;
+					};
 					3CE0760F2EEB7CC800EBCF0C = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
@@ -100,11 +152,19 @@
 			projectRoot = "";
 			targets = (
 				3CE0760F2EEB7CC800EBCF0C /* SkyChecker */,
+				3CB293412F1EF2E900AE6250 /* SkyCheckerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3CB293402F1EF2E900AE6250 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3CE0760E2EEB7CC800EBCF0C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +175,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3CB2933E2F1EF2E900AE6250 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3CE0760C2EEB7CC800EBCF0C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +191,57 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3CB293472F1EF2E900AE6250 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CE0760F2EEB7CC800EBCF0C /* SkyChecker */;
+			targetProxy = 3CB293462F1EF2E900AE6250 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3CB293482F1EF2E900AE6250 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skywatch.SkyCheckerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkyChecker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkyChecker";
+			};
+			name = Debug;
+		};
+		3CB293492F1EF2E900AE6250 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.skywatch.SkyCheckerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SkyChecker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SkyChecker";
+			};
+			name = Release;
+		};
 		3CE076192EEB7CC900EBCF0C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -319,6 +436,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3CB2934A2F1EF2E900AE6250 /* Build configuration list for PBXNativeTarget "SkyCheckerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CB293482F1EF2E900AE6250 /* Debug */,
+				3CB293492F1EF2E900AE6250 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3CE0760B2EEB7CC800EBCF0C /* Build configuration list for PBXProject "SkyChecker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
