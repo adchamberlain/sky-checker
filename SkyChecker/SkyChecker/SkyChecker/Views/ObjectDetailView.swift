@@ -56,6 +56,13 @@ struct ObjectDetailView: View {
                             .foregroundColor(.terminalBright)
                     }
 
+                    // Satellite art (ISS)
+                    if object.type == .satellite, let art = satelliteAsciiArt(objectId: object.id) {
+                        Text("")
+                        Text(art)
+                            .foregroundColor(.terminalBright)
+                    }
+
                     // Schedule
                     Text("")
                     Text("── Tonight's Schedule ──")
@@ -241,6 +248,25 @@ struct ObjectDetailView: View {
         case "m22":
             // Globular Cluster - dense star ball
             return "      . * .       \n    * * * * *    \n   * * * * * *   \n    * * * * *    \n      . * .       "
+        case "m45":
+            // Pleiades - Seven Sisters pattern
+            return "     *           *  \n        *     *     \n      *   * *       \n        *     *     \n     *           *  "
+        case "m44":
+            // Beehive Cluster - scattered stars
+            return "    *   *   *     \n      *   *   *   \n    *   *   *   * \n      *   *   *   \n    *   *   *     "
+        case "m13":
+            // Hercules Cluster - dense globular
+            return "       . * .       \n     * * * * *     \n    * * * * * *    \n   * * * * * * *   \n    * * * * * *    \n     * * * * *     \n       . * .       "
+        default:
+            return nil
+        }
+    }
+
+    private func satelliteAsciiArt(objectId: String) -> String? {
+        switch objectId {
+        case "iss":
+            // ISS - simplified space station shape
+            return "    |==|==|    \n  ]=======|    \n----[=====]----\n  ]=======|    \n    |==|==|    "
         default:
             return nil
         }
