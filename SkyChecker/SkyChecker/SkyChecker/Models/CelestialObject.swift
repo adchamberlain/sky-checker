@@ -152,6 +152,62 @@ struct CelestialObject: Identifiable, Codable {
         }
         return URL(string: "https://en.wikipedia.org/wiki/\(articleName)")
     }
+
+    /// Generate shareable text for this object
+    func shareText() -> String {
+        var lines: [String] = []
+
+        // Header
+        lines.append("\(name) - Tonight's Visibility")
+        lines.append("")
+
+        // Status
+        if let status = visibilityStatus {
+            lines.append("Status: \(status.displayText)")
+        }
+
+        // Moon phase info
+        if type == .moon, let phase = moonPhase {
+            lines.append("Phase: \(phase.rawValue)")
+            if let ill = illuminationPercent {
+                lines.append("Illumination: \(String(format: "%.0f", ill))%")
+            }
+        }
+
+        // Current position
+        if let alt = currentAltitude, let dir = currentDirection {
+            lines.append("Current: \(String(format: "%.0f", alt))° altitude, \(dir.fullName)")
+        }
+
+        // Schedule
+        if riseTime != nil || transitTime != nil || setTime != nil {
+            lines.append("")
+            if let rise = riseTime {
+                let dir = riseDirection?.rawValue ?? ""
+                lines.append("Rise: \(formatTimeForShare(rise)) \(dir)")
+            }
+            if let transit = transitTime {
+                let alt = transitAltitude.map { String(format: "%.0f°", $0) } ?? ""
+                lines.append("Peak: \(formatTimeForShare(transit)) \(alt)")
+            }
+            if let set = setTime {
+                let dir = setDirection?.rawValue ?? ""
+                lines.append("Set: \(formatTimeForShare(set)) \(dir)")
+            }
+        }
+
+        lines.append("")
+        lines.append("via SkyChecker")
+
+        return lines.joined(separator: "\n")
+    }
+
+    private func formatTimeForShare(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.timeZone = .current
+        formatter.dateFormat = "h:mm a"
+        return formatter.string(from: date)
+    }
 }
 
 extension CelestialObject {

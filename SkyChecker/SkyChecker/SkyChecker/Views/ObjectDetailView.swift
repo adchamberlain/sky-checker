@@ -175,6 +175,15 @@ struct ObjectDetailView: View {
                     .font(.terminalTitle)
                     .foregroundColor(.terminalGreen)
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if let object = object {
+                    ShareLink(item: object.shareText()) {
+                        Text("[Share]")
+                            .font(.terminalCaption)
+                            .foregroundColor(.terminalGreen)
+                    }
+                }
+            }
         }
         .toolbarBackground(Color.black, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)

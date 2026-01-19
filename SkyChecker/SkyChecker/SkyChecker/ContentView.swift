@@ -105,10 +105,17 @@ struct ContentView: View {
                         .foregroundColor(.terminalGreen)
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button { showingDatePicker = true } label: {
-                        Text("[Date]")
-                            .font(.terminalCaption)
-                            .foregroundColor(.terminalGreen)
+                    HStack(spacing: 12) {
+                        Button { showingDatePicker = true } label: {
+                            Text("[Date]")
+                                .font(.terminalCaption)
+                                .foregroundColor(.terminalGreen)
+                        }
+                        ShareLink(item: viewModel.sessionShareText()) {
+                            Text("[Share]")
+                                .font(.terminalCaption)
+                                .foregroundColor(.terminalGreen)
+                        }
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {

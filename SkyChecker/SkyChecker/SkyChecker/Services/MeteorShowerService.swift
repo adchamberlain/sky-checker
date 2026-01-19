@@ -240,4 +240,46 @@ struct MeteorShowerStatus {
     var detailText: String {
         "~\(shower.zhr)/hr from \(shower.radiantConstellation)"
     }
+
+    /// Generate shareable text for this meteor shower
+    func shareText() -> String {
+        var lines: [String] = []
+
+        // Header
+        lines.append("\(shower.name) Meteor Shower")
+        lines.append("")
+
+        // Status
+        if isActive {
+            if daysUntilPeak == 0 {
+                lines.append("PEAK TONIGHT!")
+            } else if daysUntilPeak > 0 {
+                lines.append("Active now - peaks in \(daysUntilPeak) days")
+            } else {
+                lines.append("Active now - past peak")
+            }
+        } else {
+            lines.append("Coming in \(daysUntilPeak) days")
+        }
+
+        // Details
+        lines.append("")
+        lines.append("Rate: ~\(shower.zhr) meteors/hour")
+        lines.append("Look toward: \(shower.radiantConstellation)")
+        lines.append("Source: \(shower.parentBody)")
+
+        // Peak date
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d"
+        lines.append("Peak: \(formatter.string(from: peakDate))")
+
+        // Tip
+        lines.append("")
+        lines.append("Best viewing: After midnight")
+
+        lines.append("")
+        lines.append("via SkyChecker")
+
+        return lines.joined(separator: "\n")
+    }
 }

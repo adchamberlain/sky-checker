@@ -118,6 +118,13 @@ struct MeteorShowerDetailView: View {
                     .font(.terminalTitle)
                     .foregroundColor(.terminalGreen)
             }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ShareLink(item: status.shareText()) {
+                    Text("[Share]")
+                        .font(.terminalCaption)
+                        .foregroundColor(.terminalGreen)
+                }
+            }
         }
         .toolbarBackground(Color.black, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)

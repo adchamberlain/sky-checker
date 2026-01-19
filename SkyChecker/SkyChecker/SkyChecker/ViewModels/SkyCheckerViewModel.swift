@@ -266,7 +266,66 @@ class SkyCheckerViewModel: ObservableObject {
             return sunriseTime.map { SunsetService.formatTime($0) } ?? "—"
         }
     }
-    
+
+    /// Generate shareable text for tonight's session
+    func sessionShareText() -> String {
+        var lines: [String] = []
+
+        // Header with date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMM d"
+        lines.append("Tonight's Sky - \(dateFormatter.string(from: selectedDate))")
+        lines.append("")
+
+        // Location
+        if let loc = location {
+            lines.append("Location: \(loc.displayString)")
+        }
+
+        // Sunset/Sunrise
+        lines.append("Sunset: \(formattedSunset)")
+        lines.append("Sunrise: \(formattedSunrise)")
+        lines.append("")
+
+        // Visible objects
+        let visibleObjects = sortedObjects.filter { $0.visibilityStatus == .visible }
+        let risingLater = sortedObjects.filter { $0.visibilityStatus == .notYetRisen }
+
+        if !visibleObjects.isEmpty {
+            lines.append("Visible now:")
+            for obj in visibleObjects.prefix(5) {
+                let details = obj.currentAltitude.map { String(format: "%.0f°", $0) } ?? ""
+                lines.append("  • \(obj.name) \(details)")
+            }
+            if visibleObjects.count > 5 {
+                lines.append("  + \(visibleObjects.count - 5) more")
+            }
+        }
+
+        if !risingLater.isEmpty {
+            lines.append("")
+            lines.append("Rising later:")
+            for obj in risingLater.prefix(3) {
+                let time = obj.riseTime.map { SunsetService.formatTime($0) } ?? ""
+                lines.append("  • \(obj.name) at \(time)")
+            }
+            if risingLater.count > 3 {
+                lines.append("  + \(risingLater.count - 3) more")
+            }
+        }
+
+        // Meteor shower if active
+        if let shower = meteorShowerStatus, shower.isActive {
+            lines.append("")
+            lines.append("Meteor shower: \(shower.shower.name) (~\(shower.shower.zhr)/hr)")
+        }
+
+        lines.append("")
+        lines.append("via SkyChecker")
+
+        return lines.joined(separator: "\n")
+    }
+
     private func updateObjects(with data: [String: EphemerisData], window: (start: Date, end: Date), midnight: Date) {
         let sunset = window.start
         let sunrise = window.end
