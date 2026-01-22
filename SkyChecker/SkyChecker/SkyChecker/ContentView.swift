@@ -44,7 +44,7 @@ struct ContentView: View {
                         Spacer()
                     } else {
                         ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 2) {
+                            LazyVStack(alignment: .center, spacing: 2) {
                                 // Table header
                                 HStack(spacing: 0) {
                                     HStack(spacing: 4) {
@@ -61,9 +61,8 @@ struct ContentView: View {
                                 }
                                 .font(.terminalCaption)
                                 .foregroundColor(.terminalDim)
-                                .padding(.horizontal)
                                 .padding(.vertical, 6)
-                                
+
                                 ForEach(viewModel.sortedObjects) { obj in
                                     NavigationLink {
                                         ObjectDetailView(objectId: obj.id, viewModel: viewModel)
@@ -99,26 +98,21 @@ struct ContentView: View {
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("SkyChecker v1.1")
-                        .font(.terminalTitle)
-                        .foregroundColor(.terminalGreen)
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing: 12) {
-                        Button { showingDatePicker = true } label: {
-                            Text("[Date]")
-                                .font(.terminalCaption)
-                                .foregroundColor(.terminalGreen)
-                        }
-                        ShareLink(item: viewModel.sessionShareText()) {
-                            Text("[Share]")
-                                .font(.terminalCaption)
-                                .foregroundColor(.terminalGreen)
-                        }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { showingDatePicker = true } label: {
+                        Text("[Date]")
+                            .font(.terminalCaption)
+                            .foregroundColor(.terminalGreen)
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .principal) {
+                    ShareLink(item: viewModel.sessionShareText()) {
+                        Text("[Share]")
+                            .font(.terminalCaption)
+                            .foregroundColor(.terminalGreen)
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button { showingLocationSheet = true } label: {
                         Text("[Loc]")
                             .font(.terminalCaption)
@@ -168,6 +162,24 @@ struct ContentView: View {
 
             Text("> \(viewModel.visibleCount) objects visible tonight")
                 .foregroundColor(.terminalBright)
+
+            // Weather conditions
+            if let weather = viewModel.weather {
+                NavigationLink {
+                    WeatherDetailView(viewModel: viewModel)
+                } label: {
+                    HStack(spacing: 16) {
+                        Text("> Weather: \(weather.cloudDescription)")
+                        Text("[\(weather.ratingStars)]")
+                            .foregroundColor(weather.observationRating >= 4 ? .terminalBright : .terminalDim)
+                        Spacer()
+                        Text(">")
+                            .foregroundColor(.terminalDim)
+                    }
+                    .foregroundColor(.terminalGreen)
+                }
+                .buttonStyle(.plain)
+            }
 
             // Meteor shower banner
             if let showerStatus = viewModel.meteorShowerStatus {

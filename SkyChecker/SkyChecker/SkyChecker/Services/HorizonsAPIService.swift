@@ -82,13 +82,14 @@ class HorizonsAPIService {
     
     func fetchAllEphemeris(objects: [CelestialObject], location: ObserverLocation, startTime: Date, endTime: Date) async throws -> [String: EphemerisData] {
         var results: [String: EphemerisData] = [:]
-        
+
         // Stagger requests to avoid overwhelming the NASA API
-        // NASA Horizons is rate-limited, so we add delays between requests
+        // NASA Horizons is rate-limited (one concurrent request), so we add small delays
+        // The retry logic in fetchEphemeris handles 429/503 errors if needed
         try await withThrowingTaskGroup(of: (String, EphemerisData?).self) { group in
             for (index, obj) in objects.enumerated() {
-                // Add a staggered delay: 0ms, 300ms, 600ms, 900ms, etc.
-                let delayMs = index * 300
+                // Add a staggered delay: 0ms, 100ms, 200ms, 300ms, etc.
+                let delayMs = index * 100
                 group.addTask {
                     if delayMs > 0 {
                         try? await Task.sleep(nanoseconds: UInt64(delayMs) * 1_000_000)

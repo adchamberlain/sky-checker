@@ -24,6 +24,9 @@ struct ObjectDetailView: View {
                         Text("Type: \(object.type.displayName)")
                             .foregroundColor(.terminalGreen)
 
+                        Text("Equipment: \(object.difficulty.rawValue)")
+                            .foregroundColor(.terminalGreen)
+
                         Text("Status: \(statusText)")
                             .foregroundColor(object.isVisible ? .terminalBright : .terminalGreen)
                     

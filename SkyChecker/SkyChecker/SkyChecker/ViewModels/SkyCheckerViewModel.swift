@@ -18,25 +18,28 @@ class SkyCheckerViewModel: ObservableObject {
     @Published var manualLatitude = ""
     @Published var manualLongitude = ""
     @Published var meteorShowerStatus: MeteorShowerStatus?
-    
+    @Published var weather: WeatherData?
+
     private let locationService: LocationService
     private let sunsetService: SunsetService
     private let horizonsService: HorizonsAPIService
     private let deepSkyService: DeepSkyCalculationService
     private let issService: ISSService
     private let meteorShowerService: MeteorShowerService
+    private let weatherService: WeatherService
     private let cacheService: CacheService
     private var cancellables = Set<AnyCancellable>()
     private var isRefreshing = false
     private var isFetchingData = false
 
-    init(locationService: LocationService? = nil, sunsetService: SunsetService? = nil, horizonsService: HorizonsAPIService? = nil, deepSkyService: DeepSkyCalculationService? = nil, issService: ISSService? = nil, meteorShowerService: MeteorShowerService? = nil, cacheService: CacheService? = nil) {
+    init(locationService: LocationService? = nil, sunsetService: SunsetService? = nil, horizonsService: HorizonsAPIService? = nil, deepSkyService: DeepSkyCalculationService? = nil, issService: ISSService? = nil, meteorShowerService: MeteorShowerService? = nil, weatherService: WeatherService? = nil, cacheService: CacheService? = nil) {
         self.locationService = locationService ?? LocationService()
         self.sunsetService = sunsetService ?? SunsetService()
         self.horizonsService = horizonsService ?? HorizonsAPIService()
         self.deepSkyService = deepSkyService ?? DeepSkyCalculationService()
         self.issService = issService ?? ISSService()
         self.meteorShowerService = meteorShowerService ?? MeteorShowerService()
+        self.weatherService = weatherService ?? WeatherService()
         self.cacheService = cacheService ?? .shared
         self.objects = CelestialObject.solarSystemObjects + CelestialObject.messierObjects + CelestialObject.satelliteObjects
     }
@@ -68,11 +71,26 @@ class SkyCheckerViewModel: ObservableObject {
         }
         isLoading = true
         isFetchingData = true
-        
-        // Clear any old cached data to ensure fresh API fetch
-        cacheService.clearAllCache()
-        print("🗑️ Cache cleared, fetching fresh data...")
+
         print("📍 Location: \(location.displayString) (\(location.latitude), \(location.longitude))")
+
+        // Check cache first - use cached data if valid
+        if let cachedSession = cacheService.loadSession(for: selectedDate, location: location) {
+            print("📦 Using cached session from \(cachedSession.lastUpdated)")
+            self.currentSession = cachedSession
+            self.objects = cachedSession.objects
+            self.sunsetTime = cachedSession.sunsetTime
+            self.sunriseTime = cachedSession.sunriseTime
+            self.polarCondition = sunsetService.detectPolarCondition(for: selectedDate, at: location)
+            self.meteorShowerStatus = meteorShowerService.getShowerStatus(for: selectedDate)
+            isLoading = false
+            isFetchingData = false
+            // Still fetch fresh weather even when using cache
+            await fetchWeather()
+            return
+        }
+
+        print("🔄 No valid cache, fetching fresh data...")
 
         // Detect polar conditions
         polarCondition = sunsetService.detectPolarCondition(for: selectedDate, at: location)
@@ -129,33 +147,32 @@ class SkyCheckerViewModel: ObservableObject {
             // Split objects into different categories
             let solarSystemObjects = objects.filter { $0.type == .planet || $0.type == .moon }
             let deepSkyObjects = objects.filter { $0.type == .messier }
-            let satelliteObjects = objects.filter { $0.type == .satellite }
+            let hasISS = objects.contains { $0.id == "iss" }
 
-            print("🚀 Starting fetch for \(objects.count) objects (\(solarSystemObjects.count) API, \(deepSkyObjects.count) local, \(satelliteObjects.count) satellites)...")
+            print("🚀 Starting fetch for \(objects.count) objects (\(solarSystemObjects.count) API, \(deepSkyObjects.count) local, \(hasISS ? 1 : 0) satellites)...")
 
-            // Fetch solar system objects from NASA Horizons API
-            var data = try await horizonsService.fetchAllEphemeris(objects: solarSystemObjects, location: location, startTime: window.start, endTime: window.end)
+            // Start API fetches in parallel
+            async let solarSystemData = horizonsService.fetchAllEphemeris(objects: solarSystemObjects, location: location, startTime: window.start, endTime: window.end)
+            async let issData: EphemerisData? = hasISS ? (try? await issService.fetchISSPasses(location: location, startTime: window.start, endTime: window.end)) : nil
 
-            // Calculate deep sky objects locally
+            // Calculate deep sky objects locally (fast, runs while API fetches are in progress)
+            var deepSkyData: [String: EphemerisData] = [:]
             for obj in deepSkyObjects {
                 if let ra = obj.rightAscension, let dec = obj.declination {
                     let ephemeris = deepSkyService.calculateEphemeris(ra: ra, dec: dec, location: location, startTime: window.start, endTime: window.end)
-                    data[obj.id] = ephemeris
+                    deepSkyData[obj.id] = ephemeris
                     print("🌌 Calculated \(obj.name): transit alt=\(String(format: "%.1f", ephemeris.transitAltitude ?? -90))°")
                 }
             }
 
-            // Fetch ISS passes
-            for obj in satelliteObjects {
-                if obj.id == "iss" {
-                    do {
-                        let ephemeris = try await issService.fetchISSPasses(location: location, startTime: window.start, endTime: window.end)
-                        data[obj.id] = ephemeris
-                    } catch {
-                        print("⚠️ ISS fetch failed: \(error.localizedDescription)")
-                        // Continue without ISS data - don't fail the whole load
-                    }
-                }
+            // Await parallel API fetches and merge results
+            var data = try await solarSystemData
+            data.merge(deepSkyData) { _, new in new }
+
+            if let iss = await issData {
+                data["iss"] = iss
+            } else if hasISS {
+                print("⚠️ ISS fetch failed or returned no data")
             }
 
             print("✅ Data ready for \(data.count) objects")
@@ -176,13 +193,32 @@ class SkyCheckerViewModel: ObservableObject {
             self.currentSession = session
             cacheService.saveSession(session)
             print("💾 Session saved")
+
+            // Fetch weather data (non-blocking)
+            await fetchWeather()
         } catch {
             print("❌ API Error: \(error)")
             errorMessage = error.localizedDescription
             showingError = true
         }
-        
+
         isFetchingData = false
+    }
+
+    func fetchWeather() async {
+        guard let location = location else { return }
+
+        do {
+            let weatherData = try await weatherService.fetchWeather(
+                latitude: location.latitude,
+                longitude: location.longitude
+            )
+            self.weather = weatherData
+            print("🌤️ Weather: \(weatherData.cloudDescription) (\(weatherData.cloudCover)% clouds)")
+        } catch {
+            print("⚠️ Weather fetch failed: \(error.localizedDescription)")
+            // Don't show error to user - weather is supplementary
+        }
     }
     
     func setManualLocation() {
@@ -285,6 +321,11 @@ class SkyCheckerViewModel: ObservableObject {
         // Sunset/Sunrise
         lines.append("Sunset: \(formattedSunset)")
         lines.append("Sunrise: \(formattedSunrise)")
+
+        // Weather
+        if let weather = weather {
+            lines.append("Weather: \(weather.cloudDescription) [\(weather.ratingStars)]")
+        }
         lines.append("")
 
         // Visible objects
@@ -322,6 +363,7 @@ class SkyCheckerViewModel: ObservableObject {
 
         lines.append("")
         lines.append("via SkyChecker")
+        lines.append("https://apps.apple.com/us/app/skychecker/id6757621845")
 
         return lines.joined(separator: "\n")
     }

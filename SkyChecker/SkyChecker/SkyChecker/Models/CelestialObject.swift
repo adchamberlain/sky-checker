@@ -85,7 +85,7 @@ enum SkyDirection: String, Codable {
 
 enum VisibilityStatus: Codable {
     case visible, notYetRisen, alreadySet, belowHorizon, tooCloseToSun
-    
+
     var displayText: String {
         switch self {
         case .visible: return "Visible Now"
@@ -97,12 +97,38 @@ enum VisibilityStatus: Codable {
     }
 }
 
+enum DifficultyRating: String, Codable, CaseIterable {
+    case nakedEye = "Naked Eye"
+    case binoculars = "Binoculars"
+    case smallTelescope = "Small Telescope"
+    case largeTelescope = "Large Telescope"
+
+    var shortName: String {
+        switch self {
+        case .nakedEye: return "Eye"
+        case .binoculars: return "Bino"
+        case .smallTelescope: return "Scope"
+        case .largeTelescope: return "L.Scope"
+        }
+    }
+
+    var terminalIndicator: String {
+        switch self {
+        case .nakedEye: return "[*]"
+        case .binoculars: return "[B]"
+        case .smallTelescope: return "[T]"
+        case .largeTelescope: return "[L]"
+        }
+    }
+}
+
 struct CelestialObject: Identifiable, Codable {
     let id: String
     let name: String
     var shortName: String?  // Short name for list view (defaults to name if nil)
     let type: CelestialObjectType
     let horizonsCommand: String
+    let difficulty: DifficultyRating
     // Fixed coordinates for deep sky objects (RA in hours, Dec in degrees)
     var rightAscension: Double?
     var declination: Double?
@@ -165,6 +191,7 @@ struct CelestialObject: Identifiable, Codable {
         if let status = visibilityStatus {
             lines.append("Status: \(status.displayText)")
         }
+        lines.append("Equipment: \(difficulty.rawValue)")
 
         // Moon phase info
         if type == .moon, let phase = moonPhase {
@@ -212,27 +239,27 @@ struct CelestialObject: Identifiable, Codable {
 
 extension CelestialObject {
     static let solarSystemObjects: [CelestialObject] = [
-        CelestialObject(id: "moon", name: "The Moon", shortName: "Moon", type: .moon, horizonsCommand: "301", iconName: "moon.fill", description: "Earth's natural satellite"),
-        CelestialObject(id: "mercury", name: "Mercury", type: .planet, horizonsCommand: "199", iconName: "circle.fill", description: "The smallest planet"),
-        CelestialObject(id: "venus", name: "Venus", type: .planet, horizonsCommand: "299", iconName: "sparkle", description: "The morning/evening star"),
-        CelestialObject(id: "mars", name: "Mars", type: .planet, horizonsCommand: "499", iconName: "circle.fill", description: "The Red Planet"),
-        CelestialObject(id: "jupiter", name: "Jupiter", type: .planet, horizonsCommand: "599", iconName: "circle.fill", description: "The largest planet"),
-        CelestialObject(id: "saturn", name: "Saturn", type: .planet, horizonsCommand: "699", iconName: "circle.fill", description: "The ringed planet"),
-        CelestialObject(id: "uranus", name: "Uranus", type: .planet, horizonsCommand: "799", iconName: "circle.fill", description: "The ice giant"),
-        CelestialObject(id: "neptune", name: "Neptune", type: .planet, horizonsCommand: "899", iconName: "circle.fill", description: "The distant blue planet")
+        CelestialObject(id: "moon", name: "The Moon", shortName: "Moon", type: .moon, horizonsCommand: "301", difficulty: .nakedEye, iconName: "moon.fill", description: "Earth's natural satellite"),
+        CelestialObject(id: "mercury", name: "Mercury", type: .planet, horizonsCommand: "199", difficulty: .nakedEye, iconName: "circle.fill", description: "The smallest planet"),
+        CelestialObject(id: "venus", name: "Venus", type: .planet, horizonsCommand: "299", difficulty: .nakedEye, iconName: "sparkle", description: "The morning/evening star"),
+        CelestialObject(id: "mars", name: "Mars", type: .planet, horizonsCommand: "499", difficulty: .nakedEye, iconName: "circle.fill", description: "The Red Planet"),
+        CelestialObject(id: "jupiter", name: "Jupiter", type: .planet, horizonsCommand: "599", difficulty: .nakedEye, iconName: "circle.fill", description: "The largest planet"),
+        CelestialObject(id: "saturn", name: "Saturn", type: .planet, horizonsCommand: "699", difficulty: .nakedEye, iconName: "circle.fill", description: "The ringed planet"),
+        CelestialObject(id: "uranus", name: "Uranus", type: .planet, horizonsCommand: "799", difficulty: .binoculars, iconName: "circle.fill", description: "The ice giant"),
+        CelestialObject(id: "neptune", name: "Neptune", type: .planet, horizonsCommand: "899", difficulty: .smallTelescope, iconName: "circle.fill", description: "The distant blue planet")
     ]
 
     static let messierObjects: [CelestialObject] = [
-        CelestialObject(id: "m31", name: "M31 Andromeda Galaxy", shortName: "M31", type: .messier, horizonsCommand: "", rightAscension: 0.7122, declination: 41.27, iconName: "sparkles", description: "The nearest major galaxy"),
-        CelestialObject(id: "m42", name: "M42 Orion Nebula", shortName: "M42", type: .messier, horizonsCommand: "", rightAscension: 5.59, declination: -5.45, iconName: "cloud.fill", description: "The great nebula in Orion"),
-        CelestialObject(id: "m22", name: "M22 Globular Cluster", shortName: "M22", type: .messier, horizonsCommand: "", rightAscension: 18.607, declination: -23.90, iconName: "star.fill", description: "Bright globular cluster"),
-        CelestialObject(id: "m45", name: "M45 Pleiades", shortName: "M45", type: .messier, horizonsCommand: "", rightAscension: 3.7833, declination: 24.1167, iconName: "star.fill", description: "The Seven Sisters star cluster"),
-        CelestialObject(id: "m44", name: "M44 Beehive Cluster", shortName: "M44", type: .messier, horizonsCommand: "", rightAscension: 8.6733, declination: 19.6717, iconName: "star.fill", description: "Open cluster in Cancer"),
-        CelestialObject(id: "m13", name: "M13 Hercules Cluster", shortName: "M13", type: .messier, horizonsCommand: "", rightAscension: 16.6947, declination: 36.4617, iconName: "star.fill", description: "Great globular in Hercules")
+        CelestialObject(id: "m31", name: "M31 Andromeda Galaxy", shortName: "M31", type: .messier, horizonsCommand: "", difficulty: .nakedEye, rightAscension: 0.7122, declination: 41.27, iconName: "sparkles", description: "The nearest major galaxy"),
+        CelestialObject(id: "m42", name: "M42 Orion Nebula", shortName: "M42", type: .messier, horizonsCommand: "", difficulty: .nakedEye, rightAscension: 5.59, declination: -5.45, iconName: "cloud.fill", description: "The great nebula in Orion"),
+        CelestialObject(id: "m22", name: "M22 Globular Cluster", shortName: "M22", type: .messier, horizonsCommand: "", difficulty: .binoculars, rightAscension: 18.607, declination: -23.90, iconName: "star.fill", description: "Bright globular cluster"),
+        CelestialObject(id: "m45", name: "M45 Pleiades", shortName: "M45", type: .messier, horizonsCommand: "", difficulty: .nakedEye, rightAscension: 3.7833, declination: 24.1167, iconName: "star.fill", description: "The Seven Sisters star cluster"),
+        CelestialObject(id: "m44", name: "M44 Beehive Cluster", shortName: "M44", type: .messier, horizonsCommand: "", difficulty: .nakedEye, rightAscension: 8.6733, declination: 19.6717, iconName: "star.fill", description: "Open cluster in Cancer"),
+        CelestialObject(id: "m13", name: "M13 Hercules Cluster", shortName: "M13", type: .messier, horizonsCommand: "", difficulty: .binoculars, rightAscension: 16.6947, declination: 36.4617, iconName: "star.fill", description: "Great globular in Hercules")
     ]
 
     static let satelliteObjects: [CelestialObject] = [
-        CelestialObject(id: "iss", name: "ISS", shortName: "ISS", type: .satellite, horizonsCommand: "", iconName: "airplane", description: "International Space Station")
+        CelestialObject(id: "iss", name: "ISS", shortName: "ISS", type: .satellite, horizonsCommand: "", difficulty: .nakedEye, iconName: "airplane", description: "International Space Station")
     ]
 }
 

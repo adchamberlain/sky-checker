@@ -26,7 +26,6 @@ struct ObjectRowView: View {
         }
         .font(.terminalCaption)
         .foregroundColor(object.isVisible ? .terminalBright : .terminalGreen)
-        .padding(.horizontal)
         .padding(.vertical, 6)
         .background(
             Rectangle()
