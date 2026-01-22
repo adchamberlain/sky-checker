@@ -1,6 +1,6 @@
 # SkyChecker
 
-A native iOS app that shows you what celestial objects are visible tonight from your location, using NASA's Horizons Ephemeris API.
+A native iOS app that shows you what celestial objects are visible tonight from your location. Track planets, deep sky objects, the ISS, meteor showers, and more — with live weather conditions.
 
 Built with SwiftUI and featuring a retro terminal aesthetic with ASCII art visualizations.
 
@@ -18,136 +18,105 @@ Built with SwiftUI and featuring a retro terminal aesthetic with ASCII art visua
 
 ## Features
 
+### Celestial Objects
+- **Moon** with phase, illumination percentage, and ASCII art
+- **All planets** from Mercury through Neptune
+- **Deep sky objects** — Andromeda Galaxy (M31), Orion Nebula (M42), Pleiades (M45), and more
+- **ISS passes** — know when the space station flies over
+- **Meteor shower alerts** — notifications for upcoming showers with peak times and rates
+
+### Weather Integration
+- **Live conditions** from Open-Meteo API
+- **Cloud cover** breakdown (low/mid/high layers)
+- **Observation rating** (1-5 stars) based on clouds, visibility, humidity, and wind
+- **Tips** for optimal viewing based on current conditions
+
+### Planning Tools
+- **Difficulty ratings** — know what equipment you need (Naked Eye, Binoculars, Small Telescope)
+- **Rise, set, and peak times** with compass directions
+- **Date picker** for planning future observing sessions
+- **Share** tonight's sky with friends
+
+### Other Features
 - Automatic GPS location or manual coordinate entry
 - Accurate sunset/sunrise calculations
-- Tonight's viewing list: Moon (with phase), planets (Mercury through Neptune)
-- Rise, set, and peak times with compass directions
-- Date picker for planning future observing sessions
-- Offline caching
-- Terminal-style UI with ASCII art for Moon phases
+- Smart caching for fast app launch
+- Terminal-style UI with ASCII art
+- Free. No ads. No tracking.
 
 ## Requirements
 
 - iPhone running iOS 16.0 or later
-- Mac with Xcode 15+ installed
-- Free Apple ID (for personal device installation)
-- Internet connection for NASA API calls
+- Internet connection for API calls (NASA Horizons, Open-Meteo)
 
 ---
 
-## Installation Guide
+## Installation
 
-Follow these steps to download and install SkyChecker on your iPhone.
+### Option 1: App Store (Recommended)
+Download directly from the [App Store](https://apps.apple.com/us/app/skychecker/id6757621845).
 
-### Step 1: Download the Code
+### Option 2: Build from Source
 
-**Option A: Using Git (recommended)**
-```bash
-git clone https://github.com/adchamberlain/sky-checker.git
-```
+**Requirements:**
+- Mac with Xcode 15+ installed
+- Free Apple ID (for personal device installation)
 
-**Option B: Download ZIP**
-1. Go to https://github.com/adchamberlain/sky-checker
-2. Click the green **"Code"** button
-3. Click **"Download ZIP"**
-4. Unzip the downloaded file
+**Steps:**
 
-### Step 2: Open in Xcode
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/adchamberlain/sky-checker.git
+   ```
 
-1. Open **Finder** and navigate to the downloaded folder
-2. Go to: `sky-checker/SkyChecker/SkyChecker/`
-3. Double-click **`SkyChecker.xcodeproj`** to open it in Xcode
+2. **Open in Xcode**
+   ```bash
+   cd sky-checker/SkyChecker/SkyChecker
+   open SkyChecker.xcodeproj
+   ```
 
-Or from Terminal:
-```bash
-cd sky-checker/SkyChecker/SkyChecker
-open SkyChecker.xcodeproj
-```
+3. **Configure code signing**
+   - Select the SkyChecker target
+   - Go to Signing & Capabilities
+   - Check "Automatically manage signing"
+   - Select your Personal Team
 
-### Step 3: Configure Code Signing
+4. **Build and run**
+   - Connect your iPhone via USB
+   - Select your device as the target
+   - Press ⌘R to build and run
 
-This allows the app to run on your personal iPhone.
+> **Note**: With a free Apple ID, apps expire after 7 days and must be reinstalled. A paid Apple Developer account ($99/year) removes this limitation.
 
-1. In Xcode, click on **"SkyChecker"** in the left sidebar (the blue project icon at the top)
-2. Under **TARGETS**, select **"SkyChecker"**
-3. Click the **"Signing & Capabilities"** tab
-4. Check ✅ **"Automatically manage signing"**
-5. Click the **Team** dropdown:
-   - If you see your name, select it
-   - If not, click **"Add an Account..."** and sign in with your Apple ID
-6. Select **"Your Name (Personal Team)"**
+---
 
-> ⚠️ **Note**: With a free Apple ID, apps expire after 7 days and must be reinstalled. A paid Apple Developer account ($99/year) removes this limitation.
+## How It Works
 
-### Step 4: Connect Your iPhone
+SkyChecker combines data from multiple sources:
 
-1. Connect your iPhone to your Mac with a USB cable
-2. **On your iPhone**: When prompted "Trust This Computer?", tap **Trust** and enter your passcode
-3. Wait a few seconds for Xcode to recognize your device
+- **NASA JPL Horizons System** — Real-time ephemeris data for planets and moon (the same data NASA uses for spacecraft navigation)
+- **Open-Meteo** — Weather forecasts including cloud cover, visibility, and humidity
+- **Local calculations** — Deep sky object positions computed using astronomical algorithms
 
-### Step 5: Select Your iPhone as the Target
-
-1. At the top of Xcode, find the device selector (it may say "iPhone 15 Pro" or similar)
-2. Click the dropdown
-3. Under **"iOS Devices"**, select your connected iPhone
-
-![Device selector location](https://developer.apple.com/assets/elements/icons/xcode-12/xcode-12-96x96_2x.png)
-
-### Step 6: Build and Run
-
-1. Press **⌘R** (Command + R) or click the **▶ Play** button
-2. Xcode will build the app and install it on your iPhone
-3. **First time only**: The build may take 1-2 minutes
-
-### Step 7: Trust the Developer Certificate (First Time Only)
-
-The first time you install, your iPhone won't run the app until you trust it:
-
-1. On your iPhone, go to **Settings**
-2. Tap **General**
-3. Tap **VPN & Device Management**
-4. Under "Developer App", tap your **Apple ID email**
-5. Tap **"Trust [your email]"**
-6. Tap **Trust** to confirm
-
-### Step 8: Launch the App
-
-1. Return to your iPhone home screen
-2. Find the **SkyChecker** app icon
-3. Tap to open!
-
-The app will ask for location permission — tap **"Allow While Using App"** for the best experience.
+The app calculates:
+- **Visibility** — Whether an object is above the horizon during nighttime hours
+- **Rise/Set Times** — When objects rise and set, with compass directions
+- **Transit Times** — When objects reach their highest point in the sky
+- **Moon Phase** — Current lunar illumination and phase name
+- **Observation Conditions** — Rating based on weather factors
 
 ---
 
 ## Troubleshooting
 
 ### "Untrusted Developer" error
-See Step 7 above to trust the developer certificate.
-
-### Play button is greyed out
-- Make sure your iPhone is connected and selected as the target device
-- Check that code signing is configured (Step 3)
-
-### "Could not launch" error
-- Unlock your iPhone screen
-- Try unplugging and reconnecting your iPhone
+Go to Settings → General → VPN & Device Management → Trust your developer certificate.
 
 ### App expires after 7 days
-This is normal with a free Apple ID. Just reconnect your iPhone and press ⌘R in Xcode to reinstall.
+This is normal with a free Apple ID. Reconnect your iPhone and press ⌘R in Xcode to reinstall.
 
----
-
-## How It Works
-
-SkyChecker queries NASA's Jet Propulsion Laboratory (JPL) Horizons System to get real-time ephemeris data for celestial objects. It calculates:
-
-- **Visibility**: Whether an object is above the horizon during nighttime hours
-- **Rise/Set Times**: When objects rise and set, with compass directions
-- **Transit Times**: When objects reach their highest point in the sky
-- **Moon Phase**: Current lunar illumination and phase name
-
-All calculations are based on your precise GPS location and local timezone.
+### Weather not loading
+Weather requires an internet connection. Pull to refresh to retry.
 
 ---
 
@@ -155,6 +124,8 @@ All calculations are based on your precise GPS location and local timezone.
 
 **Author**: Andrew Chamberlain, Ph.D. ([andrewchamberlain.com](https://andrewchamberlain.com))
 
-**Data**: [NASA JPL Horizons System](https://ssd.jpl.nasa.gov/horizons/)
+**Data Sources**:
+- [NASA JPL Horizons System](https://ssd.jpl.nasa.gov/horizons/)
+- [Open-Meteo Weather API](https://open-meteo.com/)
 
 **License**: MIT
