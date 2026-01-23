@@ -21,24 +21,35 @@ Discover what's visible in the night sky tonight — right from your backyard.
 
 SkyChecker uses NASA's Jet Propulsion Laboratory data to show you exactly which celestial objects are visible from your location. No guesswork, no complicated star charts — just a simple list of what you can see and when.
 
-WHAT YOU'LL SEE
+WHAT YOU CAN TRACK
 • The Moon with current phase and illumination percentage
-• All visible planets from Mercury to Neptune
-• Rise, set, and peak viewing times
-• Compass directions for easy locating
-• Beautiful ASCII art Moon phase display
+• All planets from Mercury to Neptune
+• Deep sky objects: Andromeda Galaxy, Orion Nebula, Pleiades, and more
+• International Space Station (ISS) passes
+• Meteor shower alerts with peak times and hourly rates
+
+WEATHER INTEGRATION
+• Live cloud cover and visibility conditions
+• Observation quality rating (1-5 stars)
+• Detailed weather breakdown: humidity, wind, cloud layers
+• Tips for optimal viewing based on current conditions
+
+PLANNING TOOLS
+• Equipment difficulty ratings (Naked Eye, Binoculars, Telescope)
+• Rise, set, and peak viewing times with compass directions
+• Date picker to plan future observing sessions
+• Share tonight's sky with friends and family
 
 POWERFUL FEATURES
 • Automatic GPS location detection
 • Manual coordinate entry for precise locations
-• Date picker to plan future observing sessions  
-• Offline caching for areas with poor connectivity
-• Elegant retro terminal-style interface
+• Smart caching for fast app launch
+• Elegant retro terminal-style interface with ASCII art
 
 HOW IT WORKS
 SkyChecker connects to NASA's Horizons Ephemeris System — the same data source used by professional astronomers — to calculate precise positions for celestial objects based on your exact location and time zone.
 
-The app automatically determines sunset and sunrise times, then shows you only the objects that will be above the horizon during nighttime hours.
+Weather data comes from Open-Meteo, providing real-time cloud cover, visibility, and atmospheric conditions to help you plan the perfect observing session.
 
 PERFECT FOR
 • Casual stargazers curious about tonight's sky
@@ -47,7 +58,7 @@ PERFECT FOR
 • Anyone who's ever looked up and wondered "what's that?"
 
 PRIVACY FOCUSED
-Your location stays on your device. We don't track you, collect personal data, or show ads. The only external connection is to NASA's public astronomical database.
+Your location stays on your device. We don't track you, collect personal data, or show ads. The only external connections are to NASA's public astronomical database and Open-Meteo weather service.
 
 Clear skies! 🌙✨
 ```
@@ -55,7 +66,7 @@ Clear skies! 🌙✨
 ## Keywords (100 characters max, comma-separated)
 
 ```
-astronomy,stargazing,planets,moon,night sky,stars,telescope,NASA,celestial,space
+astronomy,stargazing,planets,moon,night sky,ISS,meteor shower,weather,telescope,NASA
 ```
 
 ## Primary Category
@@ -89,19 +100,18 @@ Weather
 
 ## Support URL
 ```
-https://github.com/adchamberlain/sky-checker
+https://skychecker.app
 ```
 
 ## Marketing URL (optional)
 ```
-https://andrewchamberlain.com
+https://skychecker.app
 ```
 
 ## Privacy Policy URL
 ```
-https://github.com/adchamberlain/sky-checker/blob/main/PRIVACY_POLICY.md
+https://skychecker.app/privacy.html
 ```
-*(Or host it on your website for a cleaner URL)*
 
 ---
 
@@ -114,21 +124,30 @@ https://github.com/adchamberlain/sky-checker/blob/main/PRIVACY_POLICY.md
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
-| Build | 1 |
+| Version | 1.1 |
+| Build | 2 |
 
 ---
 
-## What's New in This Version (for updates)
+## What's New in This Version (for V1.1 update)
 ```
-Initial release! 🚀
+Big update with new objects and weather integration! 🌌
 
-• View tonight's visible Moon and planets
-• Automatic location detection
-• Rise, set, and transit times with compass directions
-• Moon phase display with ASCII art
-• Date picker for planning future sessions
-• Offline caching support
+NEW OBJECTS
+• Deep sky: Andromeda Galaxy, Orion Nebula, Pleiades, and more
+• ISS tracking: know when the space station flies over
+• Meteor shower alerts with peak times
+
+WEATHER INTEGRATION
+• Live cloud cover and observation ratings
+• Detailed conditions: visibility, humidity, wind
+• Tips for optimal viewing
+
+NEW FEATURES
+• Equipment difficulty ratings for each object
+• Share tonight's sky with friends
+• Faster app launch with smart caching
+• Improved UI layout
 ```
 
 ---
@@ -142,12 +161,12 @@ You'll need screenshots for:
 4. **iPad Pro 12.9" Display** (if supporting iPad)
 
 ### Suggested Screenshots (in order):
-1. **Main list view** showing tonight's visible objects
-2. **Moon detail view** with ASCII art phase
-3. **Planet detail view** with rise/set times
-4. **Location settings** screen
-5. **Date picker** for planning sessions
-6. **About screen** showing NASA data source
+1. **Main list view** showing tonight's visible objects with weather
+2. **Weather detail view** with cloud layers and tips
+3. **Moon detail view** with ASCII art phase
+4. **Deep sky object detail** (e.g., M31 Andromeda)
+5. **Object detail** showing difficulty rating and times
+6. **Meteor shower alert** banner
 
 ### Tips:
 - Use Xcode Simulator to capture clean screenshots
