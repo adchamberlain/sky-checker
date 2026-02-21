@@ -40,6 +40,7 @@ struct ObjectRowView: View {
         case .alreadySet: return "[x]"
         case .belowHorizon: return "[-]"
         case .tooCloseToSun: return "[!]"
+        case .midnightSun: return "[!]"
         case .none: return "[?]"
         }
     }
@@ -51,6 +52,7 @@ struct ObjectRowView: View {
         case .alreadySet: return "Set"
         case .belowHorizon: return "Below"
         case .tooCloseToSun: return "Sun"
+        case .midnightSun: return "Light"
         case .none: return "?"
         }
     }

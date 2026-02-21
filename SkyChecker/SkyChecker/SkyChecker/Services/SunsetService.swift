@@ -53,24 +53,25 @@ class SunsetService {
     /// Returns: (sunsetTonight, sunriseTomorrow) - the nighttime window for stargazing
     func getObservationWindow(for date: Date, at location: ObserverLocation) -> (start: Date, end: Date)? {
         let calendar = Calendar.current
+        guard let nextDay = calendar.date(byAdding: .day, value: 1, to: date) else { return nil }
 
-        // Get sunset for the selected evening
-        guard let sunset = getSunsetTime(for: date, at: location) else {
-            print("⚠️ Could not calculate sunset for \(date)")
-            return nil
+        // Try civil twilight first (-6°)
+        if let sunset = getSunsetTime(for: date, at: location),
+           let sunrise = getSunriseTime(for: nextDay, at: location) {
+            print("🌅 Observation window: Sunset \(Self.formatTime(sunset)) → Sunrise \(Self.formatTime(sunrise))")
+            return (sunset, sunrise)
         }
 
-        // Get sunrise for the next morning
-        guard let nextDay = calendar.date(byAdding: .day, value: 1, to: date),
-              let sunrise = getSunriseTime(for: nextDay, at: location) else {
-            print("⚠️ Could not calculate sunrise for next day")
-            return nil
+        // Fallback: actual sunset/sunrise (0° angle) for near-polar latitudes
+        // where the sun sets but civil twilight never fully ends
+        if let sunset = calculateSunEvent(for: date, at: location, angle: 0, isRising: false),
+           let sunrise = calculateSunEvent(for: nextDay, at: location, angle: 0, isRising: true) {
+            print("🌅 Observation window (fallback to 0°): Sunset \(Self.formatTime(sunset)) → Sunrise \(Self.formatTime(sunrise))")
+            return (sunset, sunrise)
         }
 
-        print("🌅 Observation window: Sunset \(Self.formatTime(sunset)) → Sunrise \(Self.formatTime(sunrise))")
-
-        // Return (sunset, sunrise) - start of night to end of night
-        return (sunset, sunrise)
+        print("⚠️ Could not calculate observation window for \(date)")
+        return nil
     }
     
     /// Get midnight for calculating evening vs morning objects

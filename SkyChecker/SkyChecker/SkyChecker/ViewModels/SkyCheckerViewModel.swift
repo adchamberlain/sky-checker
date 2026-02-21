@@ -371,10 +371,11 @@ class SkyCheckerViewModel: ObservableObject {
     private func updateObjects(with data: [String: EphemerisData], window: (start: Date, end: Date), midnight: Date) {
         let sunset = window.start
         let sunrise = window.end
-        
+        let isDark = polarCondition != .midnightSun
+
         print("🔄 Updating \(data.count) objects with API data")
         print("   Sunset: \(sunset), Sunrise: \(sunrise), Midnight: \(midnight)")
-        
+
         for i in objects.indices {
             let objectId = objects[i].id
             guard let d = data[objectId] else {
@@ -416,8 +417,12 @@ class SkyCheckerViewModel: ObservableObject {
 
             // Determine status based on current altitude
             if currentAltitude > 0 {
-                // Object is currently above horizon - VISIBLE NOW
-                if let setTime = d.setTime, currentTime < setTime {
+                // Object is currently above horizon
+                if !isDark {
+                    // Midnight sun - sun prevents observation
+                    print("   → Above horizon but midnight sun prevents observation")
+                    objects[i].visibilityStatus = .midnightSun
+                } else if let setTime = d.setTime, currentTime < setTime {
                     print("   → Currently visible, sets at \(SunsetService.formatTime(setTime))")
                     objects[i].visibilityStatus = .visible
                 } else if let setTime = d.setTime, currentTime >= setTime {
@@ -449,7 +454,7 @@ class SkyCheckerViewModel: ObservableObject {
             } else if hasTransit {
                 // Has a transit but no rise - might be circumpolar or already up
                 print("   → Has transit but no rise detected")
-                objects[i].visibilityStatus = .visible
+                objects[i].visibilityStatus = isDark ? .visible : .midnightSun
             } else {
                 // Object never gets above horizon
                 print("   → Below horizon all night")

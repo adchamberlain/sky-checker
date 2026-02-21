@@ -85,6 +85,7 @@ enum SkyDirection: String, Codable {
 
 enum VisibilityStatus: Codable {
     case visible, notYetRisen, alreadySet, belowHorizon, tooCloseToSun
+    case midnightSun  // Object is above horizon but sun prevents observation
 
     var displayText: String {
         switch self {
@@ -93,6 +94,7 @@ enum VisibilityStatus: Codable {
         case .alreadySet: return "Already Set"
         case .belowHorizon: return "Below Horizon"
         case .tooCloseToSun: return "Too Close to Sun"
+        case .midnightSun: return "Daylight"
         }
     }
 }

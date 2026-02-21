@@ -58,7 +58,7 @@ class ISSService {
                 print("✅ Got \(passResponse.response.count) ISS passes")
 
                 // Find passes within our observation window (tonight)
-                return parsePassesToEphemeris(passes: passResponse.response, startTime: startTime, endTime: endTime)
+                return parsePassesToEphemeris(passes: passResponse.response, startTime: startTime, endTime: endTime, location: location)
 
             } catch let error as ISSServiceError {
                 throw error
@@ -77,7 +77,7 @@ class ISSService {
     }
 
     /// Parse ISS pass data into EphemerisData format
-    private func parsePassesToEphemeris(passes: [ISSPass], startTime: Date, endTime: Date) -> EphemerisData {
+    private func parsePassesToEphemeris(passes: [ISSPass], startTime: Date, endTime: Date, location: ObserverLocation) -> EphemerisData {
         var data = EphemerisData()
 
         // Filter passes to those occurring during our observation window
@@ -106,10 +106,18 @@ class ISSService {
         // ISS typically reaches 30-90° altitude depending on the pass
         data.transitAltitude = 45.0  // Reasonable estimate for a good pass
 
-        // Estimate azimuths (ISS typically rises in W/SW and sets in E/NE, or vice versa)
-        data.riseAzimuth = 225.0  // SW
-        data.setAzimuth = 45.0    // NE
-        data.transitAzimuth = 180.0  // S (approximate)
+        // Estimate azimuths based on observer hemisphere
+        if location.latitude >= 0 {
+            // Northern Hemisphere: ISS transits through south
+            data.riseAzimuth = 225.0   // SW
+            data.setAzimuth = 45.0     // NE
+            data.transitAzimuth = 180.0 // S
+        } else {
+            // Southern Hemisphere: ISS transits through north
+            data.riseAzimuth = 315.0   // NW
+            data.setAzimuth = 135.0    // SE
+            data.transitAzimuth = 0.0   // N
+        }
 
         // Calculate current position if we're in the observation window
         let now = Date()

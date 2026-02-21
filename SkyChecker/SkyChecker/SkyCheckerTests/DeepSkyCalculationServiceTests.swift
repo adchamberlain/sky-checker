@@ -281,6 +281,75 @@ final class DeepSkyCalculationServiceTests: XCTestCase {
         }
     }
 
+    // MARK: - Pole / Zenith Edge Case Tests
+
+    func testAltAz_NorthPole_AzimuthIsNaN() {
+        // At the North Pole (lat=90°), azimuth is mathematically undefined
+        let location = TestFixtures.northPole
+        let date = DateTestHelpers.march15_2024_evening
+
+        let (altitude, azimuth) = sut.testableAltAz(
+            ra: TestFixtures.Vega.ra,
+            dec: TestFixtures.Vega.dec,
+            latitude: location.latitude,
+            longitude: location.longitude,
+            time: date
+        )
+
+        // Altitude should still be valid (equal to declination at the pole)
+        XCTAssertEqual(altitude, TestFixtures.Vega.dec, accuracy: 1.0,
+                       "At the North Pole, altitude should equal declination")
+        // Azimuth should be NaN since it's undefined at the pole
+        XCTAssertTrue(azimuth.isNaN,
+                      "Azimuth should be NaN at the North Pole")
+    }
+
+    func testEphemeris_NorthPole_NoNaNInResults() {
+        // Verify that ephemeris data has nil (not NaN) azimuths at the pole
+        let location = TestFixtures.northPole
+        let startTime = DateTestHelpers.utcDate(year: 2024, month: 1, day: 15, hour: 0, minute: 0)
+        let endTime = DateTestHelpers.utcDate(year: 2024, month: 1, day: 15, hour: 23, minute: 59)
+
+        let ephemeris = sut.calculateEphemeris(
+            ra: TestFixtures.Vega.ra,
+            dec: TestFixtures.Vega.dec,
+            location: location,
+            startTime: startTime,
+            endTime: endTime
+        )
+
+        // Azimuths should be nil, not NaN
+        if let riseAz = ephemeris.riseAzimuth {
+            XCTAssertFalse(riseAz.isNaN, "Rise azimuth should not be NaN")
+        }
+        if let setAz = ephemeris.setAzimuth {
+            XCTAssertFalse(setAz.isNaN, "Set azimuth should not be NaN")
+        }
+        if let transitAz = ephemeris.transitAzimuth {
+            XCTAssertFalse(transitAz.isNaN, "Transit azimuth should not be NaN")
+        }
+    }
+
+    func testAltAz_ObjectAtZenith_AzimuthIsNaN() {
+        // Polaris from the North Pole is near zenith (alt ≈ 89.26°)
+        // At the pole, cos(lat) = 0 so azimuth is undefined
+        let date = DateTestHelpers.march15_2024_evening
+
+        let (altitude, azimuth) = sut.testableAltAz(
+            ra: TestFixtures.Polaris.ra,
+            dec: TestFixtures.Polaris.dec,
+            latitude: 90.0,  // Exact pole, Polaris at zenith
+            longitude: 0.0,
+            time: date
+        )
+
+        XCTAssertGreaterThan(altitude, 85.0,
+                             "Polaris should be near zenith from the North Pole")
+        // At the pole, azimuth is undefined
+        XCTAssertTrue(azimuth.isNaN,
+                      "Azimuth should be NaN when object is near zenith at pole")
+    }
+
     func testCalculateEphemeris_ReturnsValidAltitudeAtStart() {
         let location = TestFixtures.sanFrancisco
         let startTime = DateTestHelpers.utcDate(year: 2024, month: 1, day: 15, hour: 2, minute: 0)

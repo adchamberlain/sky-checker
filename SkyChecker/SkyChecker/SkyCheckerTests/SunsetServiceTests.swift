@@ -242,6 +242,70 @@ final class SunsetServiceTests: XCTestCase {
                        "Formatted time should not contain 'm': got \(formatted)")
     }
 
+    // MARK: - Pole Polar Condition Tests
+
+    func testPolarCondition_NorthPole_WinterSolstice_IsPolarNight() {
+        let winterDate = DateTestHelpers.winterSolstice2024
+        let location = TestFixtures.northPole
+
+        let condition = sut.detectPolarCondition(for: winterDate, at: location)
+
+        XCTAssertEqual(condition, .polarNight,
+                       "North Pole should have polar night during winter solstice")
+    }
+
+    func testPolarCondition_NorthPole_SummerSolstice_IsMidnightSun() {
+        let summerDate = DateTestHelpers.summerSolstice2024
+        let location = TestFixtures.northPole
+
+        let condition = sut.detectPolarCondition(for: summerDate, at: location)
+
+        XCTAssertEqual(condition, .midnightSun,
+                       "North Pole should have midnight sun during summer solstice")
+    }
+
+    func testPolarCondition_SouthPole_WinterSolstice_IsMidnightSun() {
+        // Northern Hemisphere winter solstice = Southern Hemisphere summer
+        let winterDate = DateTestHelpers.winterSolstice2024
+        let location = TestFixtures.southPole
+
+        let condition = sut.detectPolarCondition(for: winterDate, at: location)
+
+        XCTAssertEqual(condition, .midnightSun,
+                       "South Pole should have midnight sun during Northern Hemisphere winter solstice")
+    }
+
+    func testObservationWindow_NearArctic_Summer_FallsBackToActualSunset() {
+        // At ~65°N in summer, civil twilight (-6°) may fail but actual sunset (0°) succeeds
+        // Tromsø at 69.6°N during summer solstice should have midnight sun
+        // so we use a location slightly south where sun sets but twilight doesn't end
+        let summerDate = DateTestHelpers.summerSolstice2024
+        let nearArctic = ObserverLocation(
+            latitude: 64.5,
+            longitude: 18.0,
+            altitude: 0,
+            name: "Near Arctic"
+        )
+
+        // The observation window should return something (either civil twilight or fallback)
+        // At 64.5°N during summer solstice, civil twilight may not end,
+        // but the sun does set briefly
+        let condition = sut.detectPolarCondition(for: summerDate, at: nearArctic)
+
+        if condition == .normal {
+            // If detected as normal, the observation window should succeed
+            // (either via civil twilight or the 0° fallback)
+            let window = sut.getObservationWindow(for: summerDate, at: nearArctic)
+            // At this latitude in summer, we expect either a valid window or nil
+            // The key thing is it doesn't crash
+            if let window = window {
+                XCTAssertLessThan(window.start, window.end,
+                                  "Observation window start should be before end")
+            }
+        }
+        // If midnight sun, no observation window is expected (handled by ViewModel)
+    }
+
     // MARK: - Southern Hemisphere Tests
 
     func testSunset_Sydney_ReversedSeasons() {

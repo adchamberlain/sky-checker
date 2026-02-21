@@ -42,7 +42,10 @@ class DeepSkyCalculationService {
         if maxAlt > 0 {
             data.transitTime = dataPoints[maxAltIndex].time
             data.transitAltitude = maxAlt
-            data.transitAzimuth = dataPoints[maxAltIndex].az
+            let transitAz = dataPoints[maxAltIndex].az
+            if !transitAz.isNaN {
+                data.transitAzimuth = transitAz
+            }
         }
 
         // Find rise time (crossing from negative to positive altitude)
@@ -51,7 +54,9 @@ class DeepSkyCalculationService {
             let curr = dataPoints[i]
             if prev.alt < 0 && curr.alt >= 0 {
                 data.riseTime = curr.time
-                data.riseAzimuth = curr.az
+                if !curr.az.isNaN {
+                    data.riseAzimuth = curr.az
+                }
                 break
             }
         }
@@ -62,7 +67,9 @@ class DeepSkyCalculationService {
             let curr = dataPoints[i]
             if prev.alt >= 0 && curr.alt < 0 {
                 data.setTime = curr.time
-                data.setAzimuth = curr.az
+                if !curr.az.isNaN {
+                    data.setAzimuth = curr.az
+                }
                 break
             }
         }
@@ -72,7 +79,9 @@ class DeepSkyCalculationService {
         if now >= startTime && now <= endTime {
             let (currentAlt, currentAz) = altitudeAzimuth(ra: ra, dec: dec, latitude: location.latitude, longitude: location.longitude, time: now)
             data.currentAltitude = currentAlt
-            data.currentAzimuth = currentAz
+            if !currentAz.isNaN {
+                data.currentAzimuth = currentAz
+            }
         }
         // Leave currentAltitude/Azimuth as nil if outside observation window
         data.altitudeAtStart = dataPoints.first?.alt
@@ -103,7 +112,15 @@ class DeepSkyCalculationService {
         let altitude = asin(sinAlt) * 180 / .pi
 
         // Calculate azimuth
-        let cosAz = (sin(decRad) - sin(latRad) * sinAlt) / (cos(latRad) * cos(asin(sinAlt)))
+        let cosLat = cos(latRad)
+        let cosAlt = cos(asin(sinAlt))
+
+        // At the poles or when object is at zenith, azimuth is undefined
+        if abs(cosLat * cosAlt) < 1e-10 {
+            return (altitude, .nan)
+        }
+
+        let cosAz = (sin(decRad) - sin(latRad) * sinAlt) / (cosLat * cosAlt)
         var azimuth = acos(max(-1, min(1, cosAz))) * 180 / .pi
 
         // Adjust azimuth for quadrant

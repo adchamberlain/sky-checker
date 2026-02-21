@@ -199,6 +199,7 @@ struct ObjectDetailView: View {
         case .alreadySet: return "Already Set"
         case .belowHorizon: return "Below Horizon"
         case .tooCloseToSun: return "Too Close to Sun"
+        case .midnightSun: return "Daylight"
         case .none: return "?"
         }
     }

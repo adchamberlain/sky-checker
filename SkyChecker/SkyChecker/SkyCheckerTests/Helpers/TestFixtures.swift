@@ -60,6 +60,24 @@ enum TestFixtures {
         name: "Greenwich"
     )
 
+    /// North Pole (90°N, 0°E)
+    /// Extreme latitude where azimuth is undefined
+    static let northPole = ObserverLocation(
+        latitude: 90.0,
+        longitude: 0.0,
+        altitude: 0,
+        name: "North Pole"
+    )
+
+    /// South Pole (90°S, 0°E)
+    /// Extreme latitude where azimuth is undefined
+    static let southPole = ObserverLocation(
+        latitude: -90.0,
+        longitude: 0.0,
+        altitude: 0,
+        name: "South Pole"
+    )
+
     // MARK: - Celestial Object Fixtures
 
     /// Polaris (North Star)
